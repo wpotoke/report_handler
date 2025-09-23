@@ -1,7 +1,14 @@
 import csv
+from abc import ABC, abstractmethod
 
 
-class CsvReader:
+class ReportReader(ABC):
+
+    @abstractmethod
+    def read(self): ...
+
+
+class CsvReader(ReportReader):
 
     def __init__(self, files: list[str]):
         self.files = files

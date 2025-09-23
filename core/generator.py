@@ -1,4 +1,13 @@
-class CsvReportGenerator:
+from abc import ABC, abstractmethod
+
+
+class ReportGenerator(ABC):
+
+    @abstractmethod
+    def generate(self): ...
+
+
+class CsvReportGenerator(ReportGenerator):
     def __init__(self, students: list[dict]):
         self.students = students
         self.report = {}

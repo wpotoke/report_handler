@@ -1,7 +1,14 @@
+from abc import ABC, abstractmethod
 import tabulate
 
 
-class TableRenderer:
+class ReportRenderer(ABC):
+
+    @abstractmethod
+    def render(self): ...
+
+
+class TableRenderer(ReportRenderer):
     def __init__(self, report):
         self.report = report
 
