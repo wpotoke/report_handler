@@ -42,38 +42,43 @@ class ReportHandler:
         self.renderer(gen_report).render()
 
 
-parser = argparse.ArgumentParser(
-    description="Генератор отчетов по оценкам студентов",
-    epilog="""
+def main():
+    """Основная функция, которая парсит аргументы и запускает обработчик."""
+    parser = argparse.ArgumentParser(
+        description="Генератор отчетов по оценкам студентов",
+        epilog="""
 Примеры использования:
-  python main.py files/students1.csv files/students2.csv
+  python main.py --files file1.csv file2.csv --report student-performance
         """,
-)
+    )
 
-parser.add_argument(
-    "-f",
-    "--files",
-    type=str,
-    dest="file_paths",
-    nargs="*",
-    required=True,
-    help="Пути к CSV файлам",
-)
-parser.add_argument(
-    "-r",
-    "--report",
-    type=str,
-    required=True,
-    dest="report_type",
-    help="Название отсчета, который вы хотите получить",
-)
+    parser.add_argument(
+        "-f",
+        "--files",
+        type=str,
+        dest="file_paths",
+        nargs="+",
+        required=True,
+        help="Пути к CSV файлам",
+    )
+    parser.add_argument(
+        "-r",
+        "--report",
+        type=str,
+        required=True,
+        dest="report_type",
+        help="Название отсчета, который вы хотите получить",
+    )
 
-args = parser.parse_args()
+    args = parser.parse_args()
 
-if __name__ == "__main__":
     try:
         report = ReportHandler(args.file_paths, args.report_type)
         report.run()
     except (KeyError, FileNotFoundError, csv.Error, ValueError) as e:
         print(f"Ошибка: {e}")
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
