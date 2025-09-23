@@ -17,10 +17,18 @@ class CsvReader(ReportReader):
         students = []
 
         for file in self.files:
-            with open(file, newline="", encoding="utf-8") as csvfile:
-                c = csv.DictReader(csvfile)
+            try:
+                with open(file, newline="", encoding="utf-8") as csvfile:
+                    c = csv.DictReader(csvfile)
 
-                for i in c:
-                    students.append(i)
-                csvfile.close()
+                    for i in c:
+                        students.append(i)
+            except FileNotFoundError as e:
+                raise FileNotFoundError(
+                    f"Не найден указанный файл {file}, проверьте название файла"
+                ) from e
+            except csv.Error as e:
+                raise csv.Error(f"Ошибка чтения CSV в файле {file}: {e}") from e
+        if not students:
+            raise ValueError("Файлы не содержат данных или пустые")
         return students
