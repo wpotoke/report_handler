@@ -14,6 +14,11 @@ REPORT_CONFIG = {
 
 
 class ReportHandler:
+    """Управляет полным процессом генерации отчетов.
+
+    Организует последовательность чтения данных, обработки и вывода результатов
+    в соответствии с указанным типом отчета и входными файлами."""
+
     def __init__(self, paths, report_type):
         self.paths = paths
         self.report_type = report_type
@@ -31,6 +36,7 @@ class ReportHandler:
         self.renderer = config["renderer"]
 
     def run(self):
+        """Запуск обработки отсчета"""
         data = self.reader(self.paths).read()
         gen_report = self.generator(data).generate()
         self.renderer(gen_report).render()

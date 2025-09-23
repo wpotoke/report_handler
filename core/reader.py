@@ -3,17 +3,29 @@ from abc import ABC, abstractmethod
 
 
 class ReportReader(ABC):
+    """Абстрактный класс чтения отсчетов позволяет читать различные виды отсчетов"""
 
     @abstractmethod
     def read(self): ...
 
 
 class CsvReader(ReportReader):
+    """Класс для чтения файлов в CSV формате и преобразования их в удобный вид"""
 
     def __init__(self, files: list[str]):
         self.files = files
 
     def read(self) -> list[dict[str, str]]:
+        """Читатет файлы в CSV формате
+
+        Raises:
+            FileNotFoundError: если не найден указанный файл
+            csv.Error: если ошибка чтения CSV в файле
+            ValueError: если Файлы не содержат данных или пустые
+
+        Returns:
+            list[dict[str, str]]: список словарей со всеми значениями из файла
+        """
         students = []
 
         for file in self.files:
