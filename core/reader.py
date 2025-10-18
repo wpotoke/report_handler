@@ -1,4 +1,5 @@
 import csv
+import json
 from abc import ABC, abstractmethod
 
 
@@ -43,4 +44,30 @@ class CsvReader(ReportReader):
                 raise csv.Error(f"Ошибка чтения CSV в файле {file}: {e}") from e
         if not result:
             raise ValueError("Файлы не содержат данных или пустые")
+        return result
+
+
+class JsonReader(ReportReader):
+
+    def __init__(self, files: list[str]):
+        self.files = files
+
+    def read(self) -> list[dict[str]]:
+        """Читает файлы в JSON формате (ожидает список объектов)"""
+        result = []
+
+        for file in self.files:
+            try:
+                with open(file, "r", encoding="utf-8") as jsonfile:
+                    data = json.load(jsonfile)
+
+                    if not isinstance(data, list):
+                        raise ValueError(f"Файл {file} должен содержать JSON массив")
+
+                    result.extend(data)
+
+            except FileNotFoundError as e:
+                raise FileNotFoundError(f"Не найден файл {file}") from e
+        if not result:
+            raise ValueError("Файлы не содержат данных")
         return result

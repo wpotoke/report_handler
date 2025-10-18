@@ -1,0 +1,17 @@
+[
+
+  {
+    "name": "iphone 14",
+    "brand": "apple",
+    "price": 799,
+    "rating": 4.7,
+    "features": ["face id", "5g", "a15 chip"]
+  },
+  {
+    "name": "galaxy a54",
+    "brand": "samsung", 
+    "price": 349,
+    "rating": 4.2,
+    "features": ["amoled", "120hz", "5000mah"]
+  }
+]

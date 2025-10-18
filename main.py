@@ -1,7 +1,13 @@
 import sys
 import argparse
 import csv
-from core import CsvReader, AverageRatingReportGenerator, TableRenderer
+from core import (
+    CsvReader,
+    AverageRatingReportGenerator,
+    TableRenderer,
+    JsonReader,
+    AveragePriceReportGenerator,
+)
 
 
 REPORT_CONFIG = {
@@ -9,7 +15,12 @@ REPORT_CONFIG = {
         "reader": CsvReader,
         "generator": AverageRatingReportGenerator,
         "renderer": TableRenderer,
-    }
+    },
+    "avg-price": {
+        "reader": JsonReader,
+        "generator": AveragePriceReportGenerator,
+        "renderer": TableRenderer,
+    },
 }
 
 
@@ -45,7 +56,7 @@ class ReportHandler:
 def main():
     """Основная функция, которая парсит аргументы и запускает обработчик."""
     parser = argparse.ArgumentParser(
-        description="Генератор отчетов по оценкам студентов",
+        description="Генератор отчетов",
         epilog="""
 Примеры использования:
   python main.py --files file1.csv file2.csv --report average-rating

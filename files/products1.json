@@ -1,0 +1,23 @@
+[
+    {
+      "name": "iphone 15 pro",
+      "brand": "apple",
+      "price": 999,
+      "rating": 4.9,
+      "category": "flagship"
+    },
+    {
+      "name": "galaxy s23 ultra", 
+      "brand": "samsung",
+      "price": 1199,
+      "rating": 4.8,
+      "category": "flagship"
+    },
+    {
+      "name": "redmi note 12",
+      "brand": "xiaomi", 
+      "price": 199,
+      "rating": 4.6,
+      "category": "budget"
+    }
+]
