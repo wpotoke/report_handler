@@ -7,3 +7,23 @@
 
 ### Как добавить отсчет
 В завимисимости от того какого типа расширения ваш входной файл, нам нужно зайти в /core/reader.py и реализовать свой класс [Extfile]Reader(который будет читать входной файл) если новое расширение, после зайти в core/generator.py и создать [ReportNameExt]Generator(класс генератора будет генерировать новый тип отсчета), после создать класс [Type]Render если нужен новый тип вывода отсчета, подключите его в файле main.py и готово.
+
+
+Например вот мы можем добавить чтение из json формата файлов, так же можем добавить отсчет по генериции средней цены по брэнду и к примеру оставить вывод
+добавим отсчет
+```
+REPORT_CONFIG = {
+    "average-rating": {
+        "reader": CsvReader,
+        "generator": AverageRatingReportGenerator,
+        "renderer": TableRenderer,
+    },
+    "avg_price": {
+      "reader": JsonReader,
+      "generator": AveragePriceReportGenerator,
+      "renderer": TableRebderer
+    }
+}
+```
+На этом все, это будет работать
+<img width="1231" height="200" alt="изображение" src="https://github.com/user-attachments/assets/f1cb8b8b-910b-47a8-8ea1-0bfe23a22f66" />
