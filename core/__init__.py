@@ -1,5 +1,5 @@
 from .reader import CsvReader
-from .generator import CsvReportGenerator
+from .generator import AverageRatingReportGenerator
 from .renderer import TableRenderer
 
-__all__ = ["CsvReader", "CsvReportGenerator", "TableRenderer"]
+__all__ = ["CsvReader", "AverageRatingReportGenerator", "TableRenderer"]

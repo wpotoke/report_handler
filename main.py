@@ -1,13 +1,13 @@
 import sys
 import argparse
 import csv
-from core import CsvReader, CsvReportGenerator, TableRenderer
+from core import CsvReader, AverageRatingReportGenerator, TableRenderer
 
 
 REPORT_CONFIG = {
-    "student-performance": {
+    "average-rating": {
         "reader": CsvReader,
-        "generator": CsvReportGenerator,
+        "generator": AverageRatingReportGenerator,
         "renderer": TableRenderer,
     }
 }
@@ -48,7 +48,7 @@ def main():
         description="Генератор отчетов по оценкам студентов",
         epilog="""
 Примеры использования:
-  python main.py --files file1.csv file2.csv --report student-performance
+  python main.py --files file1.csv file2.csv --report average-rating
         """,
     )
 

@@ -3,35 +3,23 @@ import pytest
 
 @pytest.fixture
 def sample_students_data():
-    """Фикстура с примером данных студентов."""
+    """Фикстура с примером данных продуктов."""
     return [
         {
-            "student_name": "Иванов Алексей",
-            "subject": "Математика",
-            "teacher_name": "Петрова Ольга",
-            "date": "2023-09-10",
-            "grade": "5",
+            "brand": "xiomi",
+            "rating": "4",
         },
         {
-            "student_name": "Петрова Мария",
-            "subject": "Физика",
-            "teacher_name": "Сидоров Иван",
-            "date": "2023-09-12",
-            "grade": "4",
+            "brand": "apple",
+            "rating": "4.5",
         },
         {
-            "student_name": "Иванов Алексей",
-            "subject": "Физика",
-            "teacher_name": "Сидоров Иван",
-            "date": "2023-09-15",
-            "grade": "3",
+            "brand": "xiomi",
+            "rating": "5",
         },
         {
-            "student_name": "Сидоров Петр",
-            "subject": "Математика",
-            "teacher_name": "Петрова Ольга",
-            "date": "2023-09-11",
-            "grade": "5",
+            "brand": "samsung",
+            "rating": "5",
         },
     ]
 
@@ -46,8 +34,8 @@ def empty_students_data():
 def invalid_students_data():
     """Фикстура с некорректными данными."""
     return [
-        {"student_name": "Иванов Алексей"},
-        {"grade": "5"},
+        {"brand": "xiomi"},
+        {"rating": "3.4"},
         {"invalid_key": "invalid_value"},
     ]
 
@@ -56,10 +44,10 @@ def invalid_students_data():
 def sample_report_data():
     """Фикстура с примером данных для отчета."""
     return {
-        "Иванов Алексей": 4.5,
-        "Петрова Мария": 4.8,
-        "Сидоров Петр": 3.9,
-        "Козлова Анна": 4.2,
+        "xiomi": 4.5,
+        "apple": 4.8,
+        "honor": 3.9,
+        "samsung": 4.2,
     }
 
 
@@ -71,16 +59,16 @@ def empty_report_data():
 
 @pytest.fixture
 def single_student_report():
-    """Фикстура с отчетом по одному студенту."""
-    return {"Иванов Алексей": 4.5}
+    """Фикстура с отчетом по одному продукту."""
+    return {"apple": 4.5}
 
 
 @pytest.fixture
 def sorted_report_data():
     """Фикстура с данными, проверяющими сортировку."""
     return {
-        "Сидоров Петр": 5.0,
-        "Петрова Мария": 4.8,
-        "Иванов Алексей": 4.8,
-        "Козлова Анна": 4.2,
+        "samsung": 5.0,
+        "apple": 4.8,
+        "xiomi": 4.8,
+        "nokia": 4.2,
     }

@@ -12,7 +12,7 @@ class TestCsvReader:
         """Тест чтения корректного CSV файла."""
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            f.write("student_name,grade\nИван Иванов,85\nМария Петрова,92\n")
+            f.write("brand,rating\nxiomi,4.5\napple,4.3\n")
             temp_file = f.name
 
         try:
@@ -20,8 +20,8 @@ class TestCsvReader:
             result = reader.read()
 
             assert len(result) == 2
-            assert result[0] == {"student_name": "Иван Иванов", "grade": "85"}
-            assert result[1] == {"student_name": "Мария Петрова", "grade": "92"}
+            assert result[0] == {"brand": "xiomi", "rating": "4.5"}
+            assert result[1] == {"brand": "apple", "rating": "4.3"}
 
         finally:
             os.unlink(temp_file)
@@ -30,11 +30,11 @@ class TestCsvReader:
         """Тест чтения нескольких CSV файлов."""
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f1:
-            f1.write("student_name,grade\nИван Иванов,85\n")
+            f1.write("brand,rating\napple,2.3\n")
             temp_file1 = f1.name
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f2:
-            f2.write("student_name,grade\nМария Петрова,92\n")
+            f2.write("brand,rating\nxiomi,5")
             temp_file2 = f2.name
 
         try:
@@ -42,8 +42,8 @@ class TestCsvReader:
             result = reader.read()
 
             assert len(result) == 2
-            assert result[0]["student_name"] == "Иван Иванов"
-            assert result[1]["student_name"] == "Мария Петрова"
+            assert result[0]["brand"] == "apple"
+            assert result[1]["brand"] == "xiomi"
 
         finally:
             os.unlink(temp_file1)
@@ -52,7 +52,7 @@ class TestCsvReader:
     def test_read_empty_file(self):
         """Тест чтения пустого CSV файла."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            f.write("student_name,grade\n")
+            f.write("brand,rating\n")
             temp_file = f.name
 
         try:
@@ -74,14 +74,14 @@ class TestCsvReader:
     def test_read_invalid_csv_format(self):
         """Тест чтения CSV с некорректным форматом."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            f.write("name,score\nИван,85\n")
+            f.write("brandname,rating_value\nxiomi,12.3\n")
             temp_file = f.name
 
         try:
             reader = CsvReader([temp_file])
 
             result = reader.read()
-            assert result == [{"name": "Иван", "score": "85"}]
+            assert result == [{"brandname": "xiomi", "rating_value": "12.3"}]
 
         finally:
             os.unlink(temp_file)

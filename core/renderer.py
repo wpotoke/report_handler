@@ -22,7 +22,5 @@ class TableRenderer(ReportRenderer):
             val = (i, k, v)
             table.append(val)
         print(
-            tabulate.tabulate(
-                table, headers=[" ", "student_name", "grade"], tablefmt="psql"
-            )
+            tabulate.tabulate(table, headers=[" ", "brand", "rating"], tablefmt="psql")
         )

@@ -2,7 +2,7 @@
 import os
 import tempfile
 import pytest
-from core import CsvReader, CsvReportGenerator, TableRenderer
+from core import CsvReader, AverageRatingReportGenerator, TableRenderer
 
 
 class TestIntegration:
@@ -11,9 +11,7 @@ class TestIntegration:
     def test_full_pipeline_single_file(self):
         """Полный тест: CSV файл → ридер → генератор → рендерер."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            f.write(
-                "student_name,grade\nИванов Алексей,5\nПетрова Мария,4\nИванов Алексей,3\n"
-            )
+            f.write("brand,rating\napple,5\nxiomi,4\napple,3\n")
             temp_file = f.name
 
         try:
@@ -21,14 +19,14 @@ class TestIntegration:
             students_data = reader.read()
 
             assert len(students_data) == 3
-            assert students_data[0]["student_name"] == "Иванов Алексей"
+            assert students_data[0]["brand"] == "apple"
 
-            generator = CsvReportGenerator(students_data)
+            generator = AverageRatingReportGenerator(students_data)
             report = generator.generate()
 
             assert len(report) == 2
-            assert report["Иванов Алексей"] == 4.0
-            assert report["Петрова Мария"] == 4.0
+            assert report["apple"] == 4.0
+            assert report["xiomi"] == 4.0
 
             renderer = TableRenderer(report)
 
@@ -42,11 +40,11 @@ class TestIntegration:
                 renderer.render()
                 output = buffer.getvalue()
 
-                assert "Иванов Алексей" in output
-                assert "Петрова Мария" in output
+                assert "apple" in output
+                assert "xiomi" in output
                 assert "4" in output
-                assert "student_name" in output
-                assert "grade" in output
+                assert "brand" in output
+                assert "rating" in output
 
             finally:
                 sys.stdout = old_stdout
@@ -57,11 +55,11 @@ class TestIntegration:
     def test_full_pipeline_multiple_files(self):
         """Тест с несколькими CSV файлами."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f1:
-            f1.write("student_name,grade\nИванов Алексей,5\nПетрова Мария,4\n")
+            f1.write("brand,rating\napple,5\nhonor,4.1\n")
             temp_file1 = f1.name
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f2:
-            f2.write("student_name,grade\nСидоров Петр,3\nИванов Алексей,2\n")
+            f2.write("brand,rating\napple,3\nxiomi,2\n")
             temp_file2 = f2.name
 
         try:
@@ -70,18 +68,18 @@ class TestIntegration:
 
             assert len(students_data) == 4
 
-            generator = CsvReportGenerator(students_data)
+            generator = AverageRatingReportGenerator(students_data)
             report = generator.generate()
 
             assert len(report) == 3
-            assert report["Иванов Алексей"] == 3.5
-            assert report["Петрова Мария"] == 4.0
-            assert report["Сидоров Петр"] == 3.0
+            assert report["honor"] == 4.1
+            assert report["apple"] == 4.0
+            assert report["xiomi"] == 2.0
 
             sorted_students = list(report.items())
-            assert sorted_students[0][0] == "Петрова Мария"
-            assert sorted_students[1][0] == "Иванов Алексей"
-            assert sorted_students[2][0] == "Сидоров Петр"
+            assert sorted_students[0][0] == "honor"
+            assert sorted_students[1][0] == "apple"
+            assert sorted_students[2][0] == "xiomi"
 
             renderer = TableRenderer(report)
             renderer.render()
@@ -93,7 +91,7 @@ class TestIntegration:
     def test_pipeline_with_empty_file(self):
         """Тест пайплайна с пустым файлом (должен упасть на ридере)."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            f.write("student_name,grade\n")
+            f.write("brand,rating\n")
             temp_file = f.name
 
         try:
@@ -108,7 +106,7 @@ class TestIntegration:
     def test_pipeline_with_invalid_data(self):
         """Тест пайплайна с некорректными данными."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            f.write("student_name,grade\nИванов Алексей,пять\nПетрова Мария,4\n")
+            f.write("brand,rating\n2,пять\nnokia,1000\n")
             temp_file = f.name
 
         try:
@@ -117,7 +115,7 @@ class TestIntegration:
 
             assert len(students_data) == 2
 
-            generator = CsvReportGenerator(students_data)
+            generator = AverageRatingReportGenerator(students_data)
             with pytest.raises(ValueError, match="Неправильный формат файла"):
                 generator.generate()
 
@@ -127,21 +125,19 @@ class TestIntegration:
     def test_pipeline_sorted_output(self):
         """Тест правильной сортировки в финальном выводе."""
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            f.write(
-                "student_name,grade\nБорисов Иван,4\nАлексеева Мария,5\nВасильев Петр,4\n"
-            )
+            f.write("brand,rating\nxiomi,4\napple,5\nnokia,4\n")
             temp_file = f.name
 
         try:
             reader = CsvReader([temp_file])
-            generator = CsvReportGenerator(reader.read())
+            generator = AverageRatingReportGenerator(reader.read())
             report = generator.generate()
 
             sorted_items = list(report.items())
 
-            assert sorted_items[0] == ("Алексеева Мария", 5.0)
-            assert sorted_items[1] == ("Борисов Иван", 4.0)
-            assert sorted_items[2] == ("Васильев Петр", 4.0)
+            assert sorted_items[0] == ("apple", 5.0)
+            assert sorted_items[1] == ("nokia", 4.0)
+            assert sorted_items[2] == ("xiomi", 4.0)
 
         finally:
             os.unlink(temp_file)
@@ -175,11 +171,11 @@ class TestReportHandlerIntegration:
         from main import ReportHandler, REPORT_CONFIG
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            f.write("student_name,grade\nИванов Алексей,5\nПетрова Мария,4\n")
+            f.write("brand,rating\nxiomi,5\nsony,4\n")
             temp_file = f.name
 
         try:
-            report_type = "student-performance"
+            report_type = "average-rating"
             assert report_type in REPORT_CONFIG
 
             handler = ReportHandler([temp_file], report_type)
@@ -194,10 +190,10 @@ class TestReportHandlerIntegration:
                 handler.run()
                 output = buffer.getvalue()
 
-                assert "Иванов Алексей" in output
-                assert "Петрова Мария" in output
-                assert "student_name" in output
-                assert "grade" in output
+                assert "xiomi" in output
+                assert "sony" in output
+                assert "brand" in output
+                assert "rating" in output
 
             finally:
                 sys.stdout = old_stdout
@@ -210,7 +206,7 @@ class TestReportHandlerIntegration:
         from main import ReportHandler
 
         with tempfile.NamedTemporaryFile(mode="w", suffix=".csv", delete=False) as f:
-            f.write("student_name,grade\nИванов Алексей,5\n")
+            f.write("brand,rating\npocophoooneee,5\n")
             temp_file = f.name
 
         try:

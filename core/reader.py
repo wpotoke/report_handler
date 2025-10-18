@@ -26,7 +26,7 @@ class CsvReader(ReportReader):
         Returns:
             list[dict[str, str]]: список словарей со всеми значениями из файла
         """
-        students = []
+        result = []
 
         for file in self.files:
             try:
@@ -34,13 +34,13 @@ class CsvReader(ReportReader):
                     c = csv.DictReader(csvfile)
 
                     for i in c:
-                        students.append(i)
+                        result.append(i)
             except FileNotFoundError as e:
                 raise FileNotFoundError(
                     f"Не найден указанный файл {file}, проверьте название файла"
                 ) from e
             except csv.Error as e:
                 raise csv.Error(f"Ошибка чтения CSV в файле {file}: {e}") from e
-        if not students:
+        if not result:
             raise ValueError("Файлы не содержат данных или пустые")
-        return students
+        return result
